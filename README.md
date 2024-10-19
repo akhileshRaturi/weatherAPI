@@ -2,7 +2,7 @@ Weather API
 ================
 Overview
 ------------
-Weather API project from roadmap.sh https://roadmap.sh/projects/weather-api-wrapper-service
+Weather API project
 
 A weather API that fetches and returns weather data from a 3rd party API, utilizing caching and environment variables.
 
@@ -23,7 +23,7 @@ Visual Crossing API key
 Installation
 ---------------
 Steps
-Clone the repository: git clone https://github.com/your-username/weather-api.git
+Clone the repository: git clone https://github.com/your-username/weatherAPI.git
 Install dependencies: mvn clean install (Maven) 
 
 Set environment variables:
