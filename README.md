@@ -6,6 +6,9 @@ Weather API project
 
 A weather API that fetches and returns weather data from a 3rd party API, utilizing caching and environment variables.
 
+![Untitled-2024-10-19-2320](https://github.com/user-attachments/assets/bd328d95-d4e6-4617-afa6-7bfd7b25da25)
+
+
 Features
 ------------
 Fetches weather data from Visual Crossing's API (or API of your choice)
