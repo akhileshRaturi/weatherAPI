@@ -5,13 +5,12 @@ import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Anky
@@ -33,16 +32,20 @@ public class WeatherService {
     @Resource
     private RestTemplate restTemplate;
 
+    private RedisTemplate<String, Weather> redisTemplate;
+
+    public WeatherService(RedisTemplate<String,Weather> redisTemplate){
+        this.redisTemplate = redisTemplate;
+    }
+
     public Weather getWeather(String place){
         String url = apiUrl + place + "?unitGroup=metric&key=" + apiKey;
         //logger.info("url Called : {}", url);
         Map<String, Object> map = restTemplate.getForObject(url, Map.class);
 
-        List<Map<String, Object>> days = (List<Map<String, Object>>) map.get("days");
+        List<Map<String, Object>> days = (List<Map<String, Object>>) map.getOrDefault("days", new ArrayList<>());
 
         List<Weather> weatherDetails = new ArrayList<>();
-
-       // logger.info("Details : {}", map);
 
         String country = (String)map.get("address");
 
@@ -56,7 +59,30 @@ public class WeatherService {
 
             weatherDetails.add(currentInfo);
         }
+        saveWeather(country, weatherDetails.get(0));
 
         return weatherDetails.get(0);
     }
+
+    public void saveWeather(String key, Weather value){
+        redisTemplate.opsForValue().set(key, value);
+    }
+
+    public Weather getWeatherRedis(String country){
+        return redisTemplate.opsForValue().get(country);
+    }
+
+    /*public List<Weather> getCacheDetails(){
+        Set<String> keys = redisTemplate.keys("*");
+
+        logger.info("keys = {}",keys);
+        if(keys!= null)
+        {
+            List<Weather> cache = keys.stream()
+                    .map(e -> redisTemplate.opsForValue().get(e))
+                    .collect(Collectors.toList());
+            return cache;
+        }
+        return null;
+    }*/
 }
